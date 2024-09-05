@@ -1,0 +1,333 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="footer-trustbuilder">
+  <div class="trustbuilders-container page-width color-{{ section.settings.color_scheme }} gradient {% if section.settings.full_width %} content-container--full-width{% endif %} section-{{ section.id }}-padding">
+    {% for item in shop.metaobjects.footer_trustbuilder_item.values %}
+      <div
+        class="trustbuilder-wrapper"
+        style="order: {{ item.order }};"
+        data-accordion-target="header-{{ forloop.index }}"
+      >
+        {% assign tileIcon = item.icon %}
+        {% if tileIcon != blank %}
+          <div>
+            <img
+              src="{{ tileIcon | image_url }}"
+              width="34"
+              height="34"
+              alt="{{ tileIcon.alt }}"
+              loading="lazy"
+            >
+          </div>
+        {% endif %}
+        <p class="h3">{{ item.title }}</p>
+        <p class="trustbuilder-short-description">{{ item.short_description | metafield_tag }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- -- ======== [ DROPDOWN SECTION ] ======== -->
+<div id="trustbuilder-details" class="trustbuilder-details">
+  <div id="close-menu" class="close-button">
+    <img src="assets/icon-close.svg" width="25px" height="25px" alt="Close">
+  </div>
+  <div class="trustbuilder-details-content page-width">
+    <div class="trustbuilder-details-inner">
+      {% for item in shop.metaobjects.footer_trustbuilder_item.values %}
+        <div class="accordion-item" style="order: {{ item.order }};">
+          <button
+            class="accordion-header"
+            id="header-{{ forloop.index }}"
+            aria-expanded="false"
+            aria-controls="content-{{ forloop.index }}"
+          >
+            <div class="accordion-title">
+              {% assign icon = item.icon %}
+              <img
+                src="{{ icon | image_url }}"
+                width="{{ icon.width }}"
+                height="{{ icon.height }}"
+                alt="{{ icon.alt }}"
+                loading="lazy"
+              >
+              <p>{{ item.title }}</p>
+            </div>
+            <div class="accordion-arrow">arrow</div>
+          </button>
+          <div class="accordion-content" id="content-{{ forloop.index }}" aria-labelledby="header-{{ forloop.index }}">
+            <article>
+              {{ item.long_description | metafield_tag }}
+            </article>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div id="dark-overlay" class="dark-overlay">&nbsp;</div>
+
+{% stylesheet %}
+  .trustbuilders-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .trustbuilder-wrapper {
+    width: calc(50% - 8px);
+    @media screen and (min-width: 750px) {
+      width: calc(25% - 8px);
+    }
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 2.4rem;
+    cursor: pointer;
+    margin: 0.8rem 0rem;
+  }
+
+  .trustbuilder-details {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50vh;
+    background-color: white;
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.3s ease, visibility 0.3s ease;
+    visibility: hidden;
+  }
+
+  .trustbuilder-details.visible {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .trustbuilder-details-content {
+    height: 100%;
+    overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .metafield-rich_text_field a {
+    text-decoration: none;
+    color: var(--color-text);
+  }
+
+  .close-button {
+    position: absolute;
+    top: -12%;
+    right: 12%;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .close-button img {
+    width: 25px;
+    height: 25px;
+    filter: invert(100%) sepia(100%) saturate(0%) hue-rotate(205deg) brightness(106%) contrast(101%);
+  }
+
+  .dark-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .dark-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  body.no-scroll {
+    overflow: hidden;
+  }
+
+  .accordion-item {
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-align: left;
+  }
+
+  .accordion-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .accordion-title img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .accordion-arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .accordion-header[aria-expanded='true'] .accordion-arrow {
+    transform: rotate(180deg);
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  }
+
+  .accordion-content[aria-hidden='false'] {
+    max-height: 1000px; /* Adjust this value based on your content */
+    opacity: 1;
+    padding: 1rem;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('DOMContentLoaded', function () {
+    const trustbuilderWrappers = document.querySelectorAll('.trustbuilder-wrapper');
+    const trustbuilderDetails = document.getElementById('trustbuilder-details');
+    const darkOverlay = document.getElementById('dark-overlay');
+    const closeMenu = document.getElementById('close-menu');
+    const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+    function openTrustbuilderDetails(accordionToOpen) {
+      darkOverlay.classList.add('visible');
+      trustbuilderDetails.classList.add('visible');
+      document.body.classList.add('no-scroll');
+
+      // Close all accordions first
+      accordionHeaders.forEach((header) => {
+        header.setAttribute('aria-expanded', 'false');
+        const content = document.getElementById(header.getAttribute('aria-controls'));
+        content.setAttribute('aria-hidden', 'true');
+      });
+
+      // Open the specified accordion
+      if (accordionToOpen) {
+        accordionToOpen.setAttribute('aria-expanded', 'true');
+        const content = document.getElementById(accordionToOpen.getAttribute('aria-controls'));
+        content.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    function closeTrustbuilderDetails() {
+      darkOverlay.classList.remove('visible');
+      trustbuilderDetails.classList.remove('visible');
+      document.body.classList.remove('no-scroll');
+    }
+
+    trustbuilderWrappers.forEach((wrapper) => {
+      wrapper.addEventListener('click', function () {
+        const accordionId = this.getAttribute('data-accordion-target');
+        const accordionToOpen = document.getElementById(accordionId);
+        openTrustbuilderDetails(accordionToOpen);
+      });
+    });
+
+    closeMenu.addEventListener('click', closeTrustbuilderDetails);
+    darkOverlay.addEventListener('click', closeTrustbuilderDetails);
+
+    // Prevent clicking inside the trustbuilder details from closing it
+    trustbuilderDetails.addEventListener('click', function (e) {
+      e.stopPropagation();
+    });
+
+    accordionHeaders.forEach((header) => {
+      header.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const expanded = this.getAttribute('aria-expanded') === 'true' || false;
+        this.setAttribute('aria-expanded', !expanded);
+
+        const content = document.getElementById(this.getAttribute('aria-controls'));
+        content.setAttribute('aria-hidden', expanded);
+
+        // Close other open accordions
+        accordionHeaders.forEach((otherHeader) => {
+          if (otherHeader !== this) {
+            otherHeader.setAttribute('aria-expanded', 'false');
+            const otherContent = document.getElementById(otherHeader.getAttribute('aria-controls'));
+            otherContent.setAttribute('aria-hidden', 'true');
+          }
+        });
+      });
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Footer trustbuider",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer trustbuilder"
+    }
+  ]
+}
+{% endschema %}
