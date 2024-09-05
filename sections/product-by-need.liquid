@@ -1,0 +1,224 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="product-by-need-container page-width color-{{ section.settings.color_scheme }} gradient {% if section.settings.full_width %} content-container--full-width{% endif %} section-{{ section.id }}-padding ">
+  <div class="product-by-need-header-container">
+    {% if section.settings.heading != blank %}
+      <h2 class="{{ section.settings.heading_size }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        {{ section.settings.heading }}
+      </h2>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <p class="product-by-need-descripton">
+        {{ section.settings.description }}
+      </p>
+    {% endif %}
+  </div>
+
+  <div class="product-by-need-element-container">
+    {% for block in section.blocks %}
+      <div class="product-by-need-elemenet-wrapper">
+        <a href="{{ block.settings.link }}">
+          <img
+            class="product-by-need-elemenet-image"
+            src="{{ block.settings.image | image_url: width: 1024 }}"
+            alt="{{ block.settings.image.alt }}"
+            width="{{ block.settings.image.width }}"
+            height="{{ block.settings.image.height }}"
+            loading="lazy"
+            style="object-position: {{ block.settings.image.presentation.focal_point }}"
+          >
+
+          <div class="product-by-need-elemenet-overlay">
+            <div class="product-by-need-title">
+              <p class="h2">{{ block.settings.title }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .product-by-need-element-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .product-by-need-elemenet-wrapper {
+    width: 100%;
+    @media screen and (min-width: 750px) {
+      width: calc(50% - 8px);
+    }
+    margin: 8px 0px;
+    height: 400px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+
+  .product-by-need-elemenet-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .product-by-need-elemenet-wrapper:hover .product-by-need-elemenet-image {
+    transform: scale(1.05);
+  }
+
+  .product-by-need-elemenet-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    clip-path: polygon(0% 70%, 100% 80%, 100% 100%, 0% 100%);
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+
+  .product-by-need-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 2;
+  }
+
+  .product-by-need-title p {
+    padding-left: 16px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Product by need",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "default": "t:sections.rich-text.blocks.heading.settings.heading.default",
+      "label": "t:sections.rich-text.blocks.heading.settings.heading.label"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        },
+        {
+          "value": "hxl",
+          "label": "t:sections.all.heading_size.options__4.label"
+        },
+        {
+          "value": "hxxl",
+          "label": "t:sections.all.heading_size.options__5.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Select an option below and we'll help you choose the keysafe that works for you"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.label",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "default": false,
+      "label": "t:sections.rich-text.settings.full_width.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 52
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Collection",
+      "type": "collectionSquare",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Collection title",
+          "default": "Home & Family"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Collection image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Collection link"
+        }
+      ],
+      "limit": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product by need"
+    }
+  ]
+}
+{% endschema %}
